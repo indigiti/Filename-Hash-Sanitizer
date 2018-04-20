@@ -26,3 +26,23 @@ function wpartisan_sanitize_file_name( $filename ) {
 }
  
 add_filter( 'sanitize_file_name', 'wpartisan_sanitize_file_name', 10, 1 );
+
+function make_filename_hash($filename) {
+
+    if( isset($_REQUEST['post_id']) ) {
+        $post_id =  (int)$_REQUEST['post_id'];
+    }else{
+        $post_id=0;
+    }
+
+    $info = pathinfo($filename);
+    $ext  = empty($info['extension']) ? '' : '.' . $info['extension'];
+    $name = basename($filename, $ext);
+
+    if($post_id>0){
+        return $post_id."_".$name . $ext;
+    }else{
+        return $name . $ext;
+    }
+}
+add_filter('sanitize_file_name', 'make_filename_hash', 10);
